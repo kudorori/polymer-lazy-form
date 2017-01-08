@@ -2,6 +2,8 @@
 <link rel="import" href="../iron-ajax/iron-ajax.html">
 <link rel="import" href="../iron-form/iron-form.html">
 <link rel="import" href="../lazy-styles/lazy-styles.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+<link rel="import" href="../paper-button/paper-button.html">
 <!--
 `lazy-form`
 
@@ -26,17 +28,37 @@
 			padding:6px 0px;
 			border-bottom:1px solid #ddd;
 		}
+		
+		lazy-panel{
+			position: relative;
+		}
+		#backup{
+			position: absolute;
+			top:0;
+			left:0;
+			right:0;
+			bottom:0;
+			background:rgba(0,0,0,0.1);
+		}
+		#backup paper-spinner{
+			position: absolute;
+			top:50%;
+			left:50%;
+			transform: translate3d(-50%,-50%,0);
+		}
 	</style>
 	<template>
 		<iron-ajax 
 			id="ajax"
 			method="[[method]]"
 			content-type="[[contentType]]"
-			url="./test"
+			url="[[url]]"
 			loading="{{loading}}"
 		></iron-ajax>
+		
 		<lazy-panel>
 			<form 
+				disabled="[[loading]]"
 				id="form" 
 				is="iron-form"
 				enctype="multipart/form-data"
@@ -45,10 +67,13 @@
 				<content id="content"></content>
 			</form>
 			<div style="text-align:right">
-				<paper-button on-click="submit">
-					<iron-icon icon="check"></iron-icon>
+				<paper-button on-click="submit" disabled="[[loading]]">
+					<iron-icon icon="check" hidden="[[loading]]"></iron-icon>
 					[[submitText]]
 				</paper-button>
+			</div>
+			<div id="backup">
+				<paper-spinner active="[[loading]]" hidden="[[!loading]]"></paper-spinner>
 			</div>
 		</lazy-panel>
 	</template>
@@ -64,6 +89,11 @@
 				submitText:{
 					type:String,
 					value:"submit"
+				},
+				loading:{
+					type:Boolean,
+					notify:true,
+					value:false
 				}
 			},
 			submit:function(){
