@@ -1,0 +1,105 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-form/iron-form.html">
+<link rel="import" href="../lazy-styles/lazy-styles.html">
+<!--
+`lazy-form`
+
+
+@demo demo/index.html 
+-->
+
+<dom-module id="lazy-form">
+	<style include="lazy-common-styles iron-flex iron-flex-alignment">
+		:host ::content paper-dropdown-menu,:host ::content paper-checkbox{
+			display:block;
+		}
+		:host ::content paper-checkbox{
+			padding:6px;
+		}
+		:host ::content h1,
+		:host ::content h2,
+		:host ::content h3,
+		:host ::content h4,
+		:host ::content h5,
+		:host ::content h6{
+			padding:6px 0px;
+			border-bottom:1px solid #ddd;
+		}
+	</style>
+	<template>
+		<iron-ajax 
+			id="ajax"
+			method="[[method]]"
+			content-type="[[contentType]]"
+			url="./test"
+			loading="{{loading}}"
+		></iron-ajax>
+		<lazy-panel>
+			<form 
+				id="form" 
+				is="iron-form"
+				enctype="multipart/form-data"
+				content-type="[[contentType]]"
+				on-iron-form-presubmit="presubmit">
+				<content id="content"></content>
+			</form>
+			<div style="text-align:right">
+				<paper-button on-click="submit">
+					<iron-icon icon="check"></iron-icon>
+					[[submitText]]
+				</paper-button>
+			</div>
+		</lazy-panel>
+	</template>
+	<script>
+		Polymer({
+			is:"lazy-form",
+			properties:{
+				contentType:{
+					value:"multipart/form-data"
+// 					value:"application/x-www-form-urlencoded"
+// 					value:"application/json"
+				},
+				submitText:{
+					type:String,
+					value:"submit"
+				}
+			},
+			submit:function(){
+				this.$.form.submit();
+			},
+			presubmit:function(e){
+				e.preventDefault();
+				var data = this.$.form.serialize();
+				var body = null;
+				var files = Polymer.dom(this).querySelectorAll("input[type='file']");
+				
+				switch(this.contentType){
+					case "multipart/form-data":
+						body = new FormData();
+						Object.keys(data).forEach(function(key){
+							body.append(key,data[key]);
+						});
+						files.forEach(function(file){
+							var name = file.getAttribute("name");
+							for(var i = 0 ; i<file.files.length;i++){
+								body.append(name,file.files[i]);
+							}
+							
+						});
+						break;
+					case "application/json":
+					case "application/x-www-form-urlencoded":
+						body = data;
+						break;
+				}
+				
+				this.$.ajax.body=body;
+				
+				this.$.ajax.generateRequest();
+				
+			}
+		})
+	</script>
+</dom-module>
