@@ -4,7 +4,9 @@
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
     "lazy-styles": "https://github.com/kudorori/polymer-lazy-styles.git",
-    "paper-spinner": "^1.2.1"
+    "paper-spinner": "^1.2.1",
+    "lazy-panel": "https://github.com/kudorori/polymer-lazy-panel.git",
+    "iron-form": "^1.1.4"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

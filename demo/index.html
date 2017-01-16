@@ -20,8 +20,9 @@
       <h3>Basic lazy-form demo</h3>
       <demo-snippet>
         <template>
-          <lazy-form>
-          	<input type="text"/>
+          <lazy-form method="POST" content-type="application/x-www-form-urlencoded">
+          	<input type="text" name="a"/>
+          	<input type="hidden"  name="b" value="123"/>
           </lazy-form>
         </template>
       </demo-snippet>
